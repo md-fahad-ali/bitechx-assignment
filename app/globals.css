@@ -1,8 +1,35 @@
 @import "tailwindcss";
 
 :root {
+  /* Base (kept for compatibility) */
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Palette from Coolors */
+  --c-rich: #0D1821;      /* dark base */
+  --c-anti: #EFF1F3;      /* light base */
+  --c-green: #4E6E5D;     /* accent */
+  --c-lion: #AD8A64;      /* secondary */
+  --c-chestnut: #A44A3F;  /* alert/accent */
+
+  /* Brand tokens (alias to lion) */
+  --brand: var(--c-lion);
+  --brand-hover: #7c6449; /* darker lion for hover */
+
+  /* App + Navbar tokens (default to white theme) */
+  --app-bg: #ffffff;
+  --app-fg: #171717;
+  --nav-bg: #ffffff;
+  --nav-fg: var(--c-rich);
+  --nav-border: rgba(13, 24, 33, 0.10); /* rich at 10% */
+
+  /* UI tokens */
+  --card-bg: var(--nav-bg);
+  --card-border: var(--nav-border);
+  --ring: rgba(78, 110, 93, 0.35); /* green ring */
+  --btn-bg: var(--brand);
+  --btn-fg: #ffffff;
+  --btn-bg-hover: var(--brand-hover);
 }
 
 @theme inline {
@@ -19,8 +46,38 @@
   }
 }
 
+/* Explicit theme control via data-theme on <html> */
+[data-theme='light'] {
+  --app-bg: #ffffff;
+  --app-fg: #171717;
+  --nav-bg: #ffffff;
+  --nav-fg: var(--c-rich);
+  --nav-border: rgba(13, 24, 33, 0.10);
+  --card-bg: var(--nav-bg);
+  --card-border: var(--nav-border);
+  --ring: rgba(78, 110, 93, 0.35);
+  --btn-bg: var(--c-green);
+  --btn-fg: #ffffff;
+  --btn-bg-hover: #3f5a4c;
+}
+
+[data-theme='dark'] {
+  --app-bg: var(--c-rich);
+  --app-fg: var(--c-anti);
+  --nav-bg: var(--c-rich);
+  --nav-fg: var(--c-anti);
+  --nav-border: rgba(239, 241, 243, 0.12); /* anti at 12% */
+  --card-bg: var(--nav-bg);
+  --card-border: var(--nav-border);
+  --ring: rgba(239, 241, 243, 0.18);
+  --btn-bg: var(--c-green);
+  --btn-fg: #ffffff;
+  --btn-bg-hover: #3f5a4c;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--app-bg);
+  color: var(--app-fg);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color .2s ease, color .2s ease;
 }
