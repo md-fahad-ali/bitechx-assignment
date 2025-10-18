@@ -2,10 +2,10 @@
 
 import { useState, type ReactNode } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useTheme } from 'next-themes';
 
 import ThemeToggle from './ThemeToggle';
+import Logo from './Logo';
 import { AnimatePresence, motion } from 'framer-motion';
 
 type Props = {
@@ -40,14 +40,7 @@ const Navbar = ({ isAuthenticated = false }: Props) => {
 
             {/* Logo */}
             <Link href="/" className="flex gap-1 items-center">
-              <Image
-                src={isDark ? "/logo-dark.svg" : "/logo-light.svg"}
-                alt="BITECHX"
-                width={40}
-                height={46}
-                className="h-8 w-auto md:h-10"
-                priority
-              />
+              <Logo className="h-8 w-auto md:h-10" />
               <span className="text-xl md:text-2xl font-bold text-[var(--nav-fg)] tracking-wide ml-2">BITECHX</span>
             </Link>
           </div>

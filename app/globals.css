@@ -46,6 +46,42 @@
   }
 }
 
+/* Logo theme switching with CSS */
+.logo-light {
+  display: block !important;
+}
+
+.logo-dark {
+  display: none !important;
+}
+
+html[data-theme='dark'] .logo-light {
+  display: none !important;
+}
+
+html[data-theme='dark'] .logo-dark {
+  display: block !important;
+}
+
+html[data-theme='light'] .logo-light {
+  display: block !important;
+}
+
+html[data-theme='light'] .logo-dark {
+  display: none !important;
+}
+
+/* Fallback for system theme detection */
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme]) .logo-light {
+    display: none !important;
+  }
+  
+  html:not([data-theme]) .logo-dark {
+    display: block !important;
+  }
+}
+
 /* Reserve scrollbar space to avoid content shift when overflow toggles */
 html {
   overflow-y: scroll;

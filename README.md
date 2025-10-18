@@ -152,7 +152,4 @@ Open http://localhost:3000
 ![Products](public/screenshots/image.png)
 ![Product Details](public/screenshots/prdouct_details.png)
 
-## License
-
-This project is private for now. Add a license if/when it is made public.
 
