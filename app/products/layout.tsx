@@ -22,8 +22,8 @@ export default async function ProductsLayout({ children }: { children: ReactNode
       {/* Sidebar (reused) */}
       <aside
         className="flex flex-col border-r border-[var(--nav-border)] bg-[var(--nav-bg)]
-        h-screen overflow-y-auto shadow-2xl shadow-black/20
-        lg:fixed lg:inset-y-0 lg:left-0 lg:h-screen lg:overflow-hidden lg:shadow-none
+        h-screen overflow-y-auto shadow-2xl shadow-black/10
+        lg:fixed lg:inset-y-0 lg:left-0 lg:h-screen lg:overflow-hidden lg:shadow-xl lg:shadow-black/5
         lg:translate-x-0
         fixed inset-y-0 left-0 w-[240px] z-60
         -translate-x-full peer-checked:translate-x-0 transition-transform duration-300 ease-in-out"

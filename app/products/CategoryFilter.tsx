@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef } from "react";
 
 export type Category = {
   id: string;
@@ -12,13 +13,26 @@ export default function CategoryFilter({ categories }: { categories: Category[] 
   const pathname = usePathname();
   const params = useSearchParams();
   const current = params.get("categoryId") ?? "";
+  const pendingTarget = useRef<string | null>(null);
 
   const onChange = (id: string) => {
     const sp = new URLSearchParams(params.toString());
     if (id) sp.set("categoryId", id); else sp.delete("categoryId");
     sp.delete("offset");
+    // Emit a pending event so SearchLoadingBridge shows skeleton
+    try { if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('search:pending')); } catch {}
+    pendingTarget.current = id || "";
     router.replace(`${pathname}?${sp.toString()}`);
   };
+
+  // When the URL reflects the target category, emit done
+  useEffect(() => {
+    const urlValue = params.get('categoryId') ?? '';
+    if (pendingTarget.current !== null && urlValue === pendingTarget.current) {
+      try { if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('search:done')); } catch {}
+      pendingTarget.current = null;
+    }
+  }, [params]);
 
   return (
     <div className="flex items-center gap-2">

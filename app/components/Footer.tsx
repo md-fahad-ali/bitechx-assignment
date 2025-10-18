@@ -17,11 +17,11 @@ export default function Footer() {
 
         {/* Links */}
         <div>
-          <h4 className="text-xs uppercase tracking-wider font-semibold text-[color:rgba(13,24,33,0.7)] dark:text-[color:rgba(239,241,243,0.75)]">Links</h4>
+          <h4 className="text-xs uppercase tracking-wider font-semibold text-[var(--nav-fg)]/70">Links</h4>
           <ul className="mt-3 space-y-2 text-sm">
             <li>
               <Link
-                className="inline-flex items-center gap-2 hover:text-[var(--c-green)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-md transition-colors"
+                className="inline-flex items-center gap-2 hover:text-[#AD8A64] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-md transition-colors"
                 href="/products"
               >
                 Products
@@ -29,7 +29,7 @@ export default function Footer() {
             </li>
             <li>
               <Link
-                className="inline-flex items-center gap-2 hover:text-[var(--c-green)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-md transition-colors"
+                className="inline-flex items-center gap-2 hover:text-[#AD8A64] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-md transition-colors"
                 href="/auth/login"
               >
                 Login
@@ -40,8 +40,8 @@ export default function Footer() {
 
         {/* Contact */}
         <div>
-          <h4 className="text-xs uppercase tracking-wider font-semibold text-[color:rgba(13,24,33,0.7)] dark:text-[color:rgba(239,241,243,0.75)]">Stay in touch</h4>
-          <p className="mt-3 text-sm opacity-80">contact: <a className="underline-offset-4 hover:underline hover:text-[var(--c-green)]" href="mailto:connect@bitechx.com">connect@bitechx.com</a></p>
+          <h4 className="text-xs uppercase tracking-wider font-semibold text-[var(--nav-fg)]/70">Stay in touch</h4>
+          <p className="mt-3 text-sm opacity-80">contact: <a className="underline-offset-4 hover:underline hover:text-[#AD8A64]" href="mailto:connect@bitechx.com">connect@bitechx.com</a></p>
         </div>
       </div>
 

@@ -2,7 +2,8 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import ProductForm from "./ProductForm";
-import { useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 
 type Category = { id: string; name: string };
 type Product = {
@@ -18,48 +19,59 @@ export default function EditModal({ categories = [], product }: { categories?: C
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
-  const open = params.get("edit") === "1";
+  const paramOpen = params.get("edit") === "1";
+  const [localOpen, setLocalOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const open = useMemo(() => (mounted && (paramOpen || localOpen)), [mounted, paramOpen, localOpen]);
 
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = 'hidden';
-      return () => { document.body.style.overflow = ''; };
+  const close = useCallback(() => {
+    if (paramOpen) {
+      const sp = new URLSearchParams(params.toString());
+      sp.delete("edit");
+      sp.delete("productId");
+      router.replace(`${pathname}?${sp.toString()}`);
+    } else {
+      setLocalOpen(false);
+      if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('modal:edit:close'));
     }
-  }, [open]);
+  }, [paramOpen, params, pathname, router]);
 
-  if (!open) return null;
-  
-  if (!product) {
-    console.log("EditModal: No product found for editing");
-    return null;
-  }
+  const initialData = useMemo(() => ({
+    id: product?.id || "",
+    name: product?.name || "",
+    description: product?.description || "",
+    price: product?.price ?? 0,
+    categoryId: product?.categoryId || "",
+    image: Array.isArray(product?.images) ? product?.images[0] : "",
+  }), [product]);
 
-  const close = () => {
-    const sp = new URLSearchParams(params.toString());
-    sp.delete("edit");
-    sp.delete("productId");
-    router.replace(`${pathname}?${sp.toString()}`);
-  };
+  if (!mounted || !open) return null;
 
-  const initialData = {
-    id: product.id,
-    name: product.name,
-    description: product.description,
-    price: product.price,
-    categoryId: product.categoryId,
-    image: Array.isArray(product.images) ? product.images[0] : "",
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-6">
-      <div className="absolute inset-0 h-screen bg-black/50" onClick={close} />
-      <div className="relative w-full max-w-xl max-h-[85vh] overflow-y-auto rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] p-5 shadow-xl">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-semibold text-[var(--nav-fg)]">Edit Product</h2>
-          <button onClick={close} className="p-2 rounded-md border border-[var(--card-border)]">✕</button>
+  const modalContent = (
+    <div className="fixed inset-0 z-[99] flex items-center justify-center p-4" onClick={close}>
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      <div 
+        className="relative w-full max-w-md bg-[var(--app-bg)] rounded-xl shadow-2xl max-h-[90vh] overflow-hidden border border-[var(--card-border)]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between p-6 border-b border-[var(--card-border)]">
+          <h2 className="text-xl font-semibold text-[var(--app-fg)]">Edit Product</h2>
+          <button
+            onClick={close}
+            className="p-2 hover:bg-[var(--card-border)] rounded-lg transition-colors text-[var(--app-fg)]"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
-        <ProductForm onSuccess={close} categories={categories} initialData={initialData} isEdit={true} />
+        <div className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
+          <ProductForm onSuccess={close} categories={categories} initialData={initialData} isEdit={true} />
+        </div>
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }
