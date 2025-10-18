@@ -150,7 +150,7 @@ Open http://localhost:3000
 ## Screenshots
 
 ![Products](public/screenshots/image.png)
-![Product Details](public/screenshots/product_details.png)
+![Product Details](public/screenshots/prdouct_details.png)
 
 ## License
 
