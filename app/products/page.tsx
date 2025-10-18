@@ -113,10 +113,10 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
 
   const q = typeof params.q === 'string' ? params.q : undefined;
   const page = Number(params.page ?? 1) || 1;
-  console.log("Current page from URL:", params.page, "Parsed page:", page);
+  // console.log("Current page from URL:", params.page, "Parsed page:", page);
   const limit = 12;
   const offset = (page - 1) * limit;
-  console.log("Calculated offset:", offset, "Limit:", limit);
+  // console.log("Calculated offset:", offset, "Limit:", limit);
   const categoryId = typeof params.categoryId === 'string' ? params.categoryId : undefined;
   const editProductId = typeof params.productId === 'string' ? params.productId : undefined;
 
@@ -138,13 +138,13 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
 
   const editProduct = editProductId ? items.find(p => p.id === editProductId) : undefined;
 
-  console.log("Full products list:", items);
+  // console.log("Full products list:", items);
   
-  console.log("Page debug:", { 
-    editProductId, 
-    editProduct: editProduct ? editProduct.name : "not found",
-    totalItems: items.length 
-  });
+  // console.log("Page debug:", { 
+  //   editProductId, 
+  //   editProduct: editProduct ? editProduct.name : "not found",
+  //   totalItems: items.length 
+  // });
 
   // Show loading state if no items and it's likely still loading
   const isLoading = !items.length && !q;
@@ -196,7 +196,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
   };
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-7xl mx-auto px-3 md:px-4 lg:px-8 space-y-6">
       <CreateModal categories={catsFinal} />
       <EditModal categories={catsFinal} product={editProduct} />
       {/* Filters */}
@@ -254,72 +254,74 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
                   })()}
                 </div>
                 <div className="p-4">
-                  <Link href={`/products/${p.slug}`}>
+                  <Link href={`/products/${p.slug}`} className="focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm">
                     <h3 className="font-medium text-[var(--nav-fg)] line-clamp-1 hover:underline">{p.name}</h3>
                   </Link>
                   <p className="mt-1 text-sm opacity-70 pb-[25px] line-clamp-2 min-h-[2.5rem]">{p.description}</p>
                   <hr className="my-3 border-t border-[var(--nav-border)]/70" />
                   <div className="mt-2 flex items-center justify-between">
-                    <div className="font-semibold text-white">{formatPrice(p.price)}</div>
+                    <div className="font-semibold text-[var(--nav-fg)]">{formatPrice(p.price)}</div>
                     <ProductActions product={{ id: p.id, name: p.name, description: p.description, slug: p.slug }} />
                   </div>
                 </div>
               </div>
             </li>
-            ))}
-          </ul>
-          <nav className="flex items-center justify-center mt-8" aria-label="Pagination">
-            <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+          ))}
+        </ul>
+        <nav className="flex items-center justify-center mt-8" aria-label="Pagination">
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+            
+            {/* Prev Button */}
+            <Link 
+              aria-disabled={!hasPreviousPage} 
+              tabIndex={hasPreviousPage ? 0 : -1}
+              className={`inline-flex items-center justify-center px-3 py-1 sm:px-4 sm:py-2 rounded-lg sm:text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] ${
+                hasPreviousPage
+                  ? 'text-[var(--nav-fg)] hover:bg-[var(--brand)] hover:text-[var(--btn-fg)]'
+                  : 'text-[color:rgba(13,24,33,0.35)] dark:text-[color:rgba(239,241,243,0.35)] cursor-not-allowed pointer-events-none opacity-60'
+              }`} 
+              href={makeHref(currentPage - 1)}
+            >
+              Prev
+            </Link>
+            
+            {/* Page Numbers */}
+            {getPageNumbers().map((pageNum, idx) => {
+              if (pageNum === '...') {
+                return <span key={idx} className="px-2 py-1 sm:py-2 sm:text-sm text-[color:rgba(13,24,33,0.45)] dark:text-[color:rgba(239,241,243,0.45)]">...</span>;
+              }
               
-              {/* Prev Button */}
-              <Link 
-                aria-disabled={!hasPreviousPage} 
-                className={`px-3 py-1 sm:px-4 sm:py-2 rounded-lg sm:text-sm font-medium transition-colors ${
-                  hasPreviousPage 
-                    ? 'text-gray-700 dark:text-gray-300 hover:bg-[#ad8a64] hover:text-white' 
-                    : 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
-                }`} 
-                href={makeHref(currentPage - 1)}
-              >
-                Prev
-              </Link>
+              const isActive = pageNum === currentPage;
               
-              {/* Page Numbers */}
-              {getPageNumbers().map((pageNum, idx) => {
-                if (pageNum === '...') {
-                  return <span key={idx} className="px-2 py-1 sm:py-2  sm:text-sm text-gray-400 dark:text-gray-600">...</span>;
-                }
-                
-                const isActive = pageNum === currentPage;
-                
-                return (
-                  <Link
-                    key={idx}
-                    href={makeHref(pageNum)}
-                    className={`w-[32px] h-[32px] sm:w-[40px] sm:h-[40px] flex items-center justify-center rounded-lg text-xs sm:text-sm font-medium transition-colors ${
-                      isActive 
-                        ? 'bg-[#ad8a64] text-white shadow-md' 
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-[#ad8a64] hover:text-white'
-                    }`}
-                    aria-current={isActive ? 'page' : undefined}
-                  >
-                    {pageNum}
-                  </Link>
-                );
-              })}
-              
-              {/* Next Button */}
-              <Link 
-                aria-disabled={!hasNextPage} 
-                className={`px-3 py-1 sm:px-4 sm:py-2 rounded-lg sm:text-sm font-medium transition-colors ${
-                  hasNextPage 
-                    ? 'text-gray-700 dark:text-gray-300 hover:bg-[#ad8a64] hover:text-white' 
-                    : 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
-                }`} 
-                href={makeHref(currentPage + 1)}
-              >
-                Next
-              </Link>
+              return (
+                <Link
+                  key={idx}
+                  href={makeHref(pageNum)}
+                  className={`w-[32px] h-[32px] sm:w-[40px] sm:h-[40px] flex items-center justify-center rounded-lg text-xs sm:text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] ${
+                    isActive
+                      ? 'bg-[var(--brand)] text-[var(--btn-fg)] shadow-md'
+                      : 'text-[var(--nav-fg)] hover:bg-[var(--brand)] hover:text-[var(--btn-fg)]'
+                  }`}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  {pageNum}
+                </Link>
+              );
+            })}
+            
+            {/* Next Button */}
+            <Link 
+              aria-disabled={!hasNextPage} 
+              tabIndex={hasNextPage ? 0 : -1}
+              className={`inline-flex items-center justify-center px-3 py-1 sm:px-4 sm:py-2 rounded-lg sm:text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] ${
+                hasNextPage
+                  ? 'text-[var(--nav-fg)] hover:bg-[var(--brand)] hover:text-[var(--btn-fg)]'
+                  : 'text-[color:rgba(13,24,33,0.35)] dark:text-[color:rgba(239,241,243,0.35)] cursor-not-allowed pointer-events-none opacity-60'
+              }`} 
+              href={makeHref(currentPage + 1)}
+            >
+              Next
+            </Link>
               
 
             </div>
