@@ -2,6 +2,8 @@
 
 import { useState, type ReactNode } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { useTheme } from 'next-themes';
 
 import ThemeToggle from './ThemeToggle';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -12,7 +14,11 @@ type Props = {
 
 const Navbar = ({ isAuthenticated = false }: Props) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { theme, systemTheme } = useTheme();
   
+  // Determine the effective theme
+  const effectiveTheme = theme === 'system' ? systemTheme : theme;
+  const isDark = effectiveTheme === 'dark';
 
   return (
     <nav className="w-full bg-[var(--nav-bg)] border-b border-[var(--nav-border)]">
@@ -34,7 +40,15 @@ const Navbar = ({ isAuthenticated = false }: Props) => {
 
             {/* Logo */}
             <Link href="/" className="flex gap-1 items-center">
-              <span className="text-2xl md:text-3xl font-bold text-[var(--nav-fg)] tracking-wide">BITECHX</span>
+              <Image
+                src={isDark ? "/logo-dark.svg" : "/logo-light.svg"}
+                alt="BITECHX"
+                width={40}
+                height={46}
+                className="h-8 w-auto md:h-10"
+                priority
+              />
+              <span className="text-xl md:text-2xl font-bold text-[var(--nav-fg)] tracking-wide ml-2">BITECHX</span>
             </Link>
           </div>
 
